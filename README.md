@@ -1,10 +1,6 @@
 # rust-logger
 
-A Rust learning project focused on building a logging system from scratch.
-
-## Purpose
-
-This project is part of a structured Rust course. The goal is to learn Rust fundamentals by hand — no AI completions, no inline hints, no autocomplete. Everything written here is typed manually to build muscle memory and a deep understanding of the language.
+A logging system built in Rust from scratch.
 
 ## Modules
 
