@@ -21,8 +21,13 @@ When helping here: explain concepts, point to the right module or standard libra
 
 ## Structure
 
-Single-binary crate (`src/main.rs`). As the logger grows it will likely expand into modules under `src/` — e.g. `src/logger.rs`, `src/level.rs` — and be pulled into `main.rs` with `mod` declarations.
+Single-binary crate. Modules are declared in `src/main.rs` with `mod <name>;` and implemented in their own files under `src/`.
+
+Current modules:
+- `src/circular_buffer.rs` — generic fixed-capacity ring buffer (`CircularBuffer<T>`). Supports `push` (overwrites oldest when full), `get` by logical index (0 = oldest), `iter`, `len`, `is_empty`, `is_full`.
+
+As the logger grows, expect modules like `src/level.rs` (log levels) and `src/logger.rs` (the logger itself that uses `CircularBuffer`).
 
 ## Rust Edition
 
-Uses edition 2024 (`Cargo.toml`). No external dependencies yet.
+Uses edition 2024 (`Cargo.toml`). No external dependencies.
