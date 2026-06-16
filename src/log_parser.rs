@@ -6,7 +6,7 @@ use std::fmt;
 
 // #[derive] asks the compiler to auto-implement these traits
 // Debug -> enables {:?} printing (for tests and dbg!())
-// Cone -> enables .clone() (explicit deep copy)
+// Clone -> enables .clone() (explicit deep copy)
 // PartialEq -> enables == comparisons for tests
 #[derive(Debug, Clone, PartialEq)]
 pub struct LogEntry {
@@ -139,7 +139,7 @@ impl LogParser {
         }
 
         // Convert HashMap into a Vec of (key, value) tuples so we can sort
-        // .into_iter() - MOVES the HashMap, sonsuming it (we don't need it after)
+        // .into_iter() - MOVES the HashMap, consuming it (we don't need it after)
         let mut pairs: Vec<(String, usize)> = source_counts.into_iter().collect();
 
         // Sort by count descending - sort_by takes a closure (anonymous fn)
