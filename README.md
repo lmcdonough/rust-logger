@@ -7,6 +7,7 @@ A logging system built in Rust from scratch.
 | Module | Description |
 |---|---|
 | `circular_buffer` | Generic fixed-capacity ring buffer. Overwrites oldest entry when full. |
+| `log_parser` | Parses `[LEVEL] timestamp source: message` log lines into `LogEntry` structs, counts entries by level, ranks top sources by level, and implements `Display` for a summary report. |
 
 ## Topics Covered
 
