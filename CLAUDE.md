@@ -27,6 +27,7 @@ Current modules:
 - `src/circular_buffer.rs` — generic fixed-capacity ring buffer (`CircularBuffer<T>`). Supports `push` (overwrites oldest when full), `get` by logical index (0 = oldest), `iter`, `len`, `is_empty`, `is_full`.
 - `src/kv_store.rs` — `KvStore` with optional TTL support. Store values with or without expiry times. Methods: `set` (store with optional TTL), `get` (returns `Option<&str>`, respects expiry), `delete` (remove key), `purge_expired` (clean up expired entries), `len` (total keys), `active_len` (non-expired only), `contains_key` (exists and not expired).
 - `src/log_parser.rs` — `LogParser` and `LogEntry`. Parses `[LEVEL] timestamp source: message` lines into owned `LogEntry` structs via `parse_line` (returns `Option<LogEntry>`), aggregates with `count_by_level` (`HashMap<String, usize>`) and `top_n_sources`, and implements `fmt::Display` for a summary report.
+- `src/rolling_window.rs` — generic fixed-size sliding window (`RollingWindow<T>` where `T: Copy + Into<f64>`) backed by a `VecDeque`. `push` evicts the oldest value when at capacity. Computes aggregates via `stats` (returns `Option<WindowStats>` with min/max/mean/sum/count), plus convenience methods `mean` (`Option<f64>`) and `count_above` (count of values over a threshold). Also `len`, `is_empty`, `is_full`, `values`.
 
 As the logger grows, expect modules like `src/level.rs` (log levels) and `src/logger.rs` (the logger itself that uses `CircularBuffer`).
 
