@@ -13,6 +13,9 @@ A logging system built in Rust from scratch.
 | `rate_limiter` | Sliding-window rate limiter (`RateLimiter`) backed by a `VecDeque` of Unix timestamps. Evicts expired timestamps before each `check`, rejecting requests over capacity with a typed `RateLimitError` (via `thiserror`). Exposes `check`/`allow`, `current_count`, `remaining`, `is_throttled`, and `reset`. |
 | `lru_cache` | LRU cache (`LruCache`) pairing a `HashMap` for O(1) key lookup with a `BTreeMap` keyed by a monotonic access counter for O(log n) eviction of the least-recently-used entry. `ThreadSafeLruCache` wraps it in `Arc<Mutex<_>>` for cheap-clone sharing across threads. |
 | `merge_stream` | K-way merge of pre-sorted `LogRecord` streams using a `BinaryHeap` min-heap (one candidate per stream). `merge_k_streams` returns a fully sorted `Vec`; `merge_streaming` / `MergeIter` provide a lazy `Iterator` version. Runs in O(N log K) time, O(K) space. |
+| `concurrent_kv` | Thread-safe key-value store (`ConcurrentKvStore`) using the `Arc<RwLock<HashMap>>` pattern for concurrent reads and exclusive writes. Cheap to clone (shares one heap-allocated map). Supports optional TTL, `get`/`set`/`delete`/`purge_expired`/`active_len`. |
+| `concurrent_rate_limiter` | Thread-safe sliding-window rate limiter (`ConcurrentRateLimiter`) wrapping the inner limiter in `Arc<Mutex<_>>`. The lock makes check-and-record atomic, closing the TOCTOU race that would otherwise let concurrent callers exceed capacity. |
+| `log_pipeline` | Multi-producer, single-consumer log pipeline (`LogPipeline`) over an `mpsc` channel. A consumer thread drains `LogLine`s until all senders drop; `producer()` hands out cloneable senders and `shutdown()` joins the consumer and returns the collected lines. |
 
 ## Topics Covered
 
@@ -33,7 +36,11 @@ A logging system built in Rust from scratch.
 - Sliding-window rate limiting over Unix timestamps
 - BTreeMap for ordered access and O(log n) min/oldest lookup
 - LRU cache design (HashMap + BTreeMap recency tracking)
-- Thread-safe shared state with `Arc<Mutex<T>>`
+- Thread-safe shared state with `Arc<Mutex<T>>` and `Arc<RwLock<T>>`
+- Concurrent reads vs. exclusive writes (`RwLock` read/write locks)
+- Avoiding TOCTOU races by making check-and-record atomic under a lock
+- Message passing with `mpsc` channels (multi-producer, single-consumer)
+- Spawning threads, cloning senders, and joining with `JoinHandle`
 - K-way merge with a `BinaryHeap` min-heap (custom reversed `Ord`)
 - Implementing the `Iterator` trait and returning `impl Iterator`
 - Trait objects (`Box<dyn Iterator>`) for type erasure
